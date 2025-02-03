@@ -1,0 +1,79 @@
+version: '3.9'
+
+x-common-env: &common-env
+  SPRING_PROFILES_ACTIVE: production
+  LOGGING_LEVEL_ROOT: INFO
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "200k"
+    max-file: "10"
+
+services:
+  mysql-db:
+    image: mysql:8.0.28
+    container_name: cloudstore-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      MYSQL_DATABASE: cloudstore
+      MYSQL_USER: cloudstore_user
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_user_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    secrets:
+      - mysql_root_password
+      - mysql_user_password
+    logging: *default-logging
+    restart: unless-stopped
+
+  load-balancer:
+    build: 
+      context: ./load-balancer
+      dockerfile: Dockerfile
+    container_name: cloudstore-load-balancer
+    environment:
+      <<: *common-env
+      LOAD_BALANCER_STRATEGY: round-robin
+    ports:
+      - "8080:8080"
+    depends_on:
+      - storage-container-1
+      - storage-container-2
+    logging: *default-logging
+    restart: unless-stopped
+
+  storage-container-1: &storage-template
+    build: 
+      context: ./storage-container
+      dockerfile: Dockerfile
+    environment:
+      <<: *common-env
+      CONTAINER_ID: storage-1
+      STORAGE_BASE_DIR: /data/files/storage-1
+    volumes:
+      - storage-data-1:/data/files
+    logging: *default-logging
+    restart: unless-stopped
+
+  storage-container-2:
+    <<: *storage-template
+    environment:
+      <<: *common-env
+      CONTAINER_ID: storage-2
+      STORAGE_BASE_DIR: /data/files/storage-2
+    volumes:
+      - storage-data-2:/data/files
+
+volumes:
+  mysql-data:
+  storage-data-1:
+  storage-data-2:
+
+secrets:
+  mysql_root_password:
+    file: ./secrets/mysql_root_password
+  mysql_user_password:
+    file: ./secrets/mysql_user_password

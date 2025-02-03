@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: cloudstore-distributed-file-system
+  profiles:
+    active: dev
+
+  # Database Configuration
+  datasource:
+    mysql:
+      jdbc-url: jdbc:mysql://mysql-db:3306/cloudstore_db
+      username: ${MYSQL_USER}
+      password: ${MYSQL_PASSWORD}
+    sqlite:
+      jdbc-url: jdbc:sqlite:/data/local-cache.db
+
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  # Security Configuration
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      expiration: 86400000  # 24 hours
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.cloudstore: DEBUG
+  file:
+    path: /logs
+    name: /logs/cloudstore.log
+
+# Load Balancer Configuration
+loadbalancer:
+  strategy: round-robin
+  max-retries: 3
+  timeout: 5000
+
+# Storage Container Configuration
+storage:
+  base-dir: /data/files
+  chunk-size: 5242880  # 5MB chunks
+  replication-factor: 2
+
+# Monitoring Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,info
