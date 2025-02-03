@@ -1,104 +1,155 @@
 # Distributed File Storage - Project Structure
 
 ```
-📦 distributed-file-storage
-├── 📂 docker
-│   ├── 📂 load-balancer
-│   │   └── 📄 Dockerfile
-│   ├── 📂 storage-container
-│   │   └── 📄 Dockerfile
-│   └── 📄 docker-compose.yml
-│
-├── 📂 src
-│   ├── 📂 main
-│   │   ├── 📂 java/com/cloudstore
-│   │   │   ├── 📄 CloudStoreApplication.java
-│   │   │   ├── 📂 config
-│   │   │   │   ├── 📄 SecurityConfig.java
-│   │   │   │   ├── 📄 AsyncConfig.java
-│   │   │   │   ├── 📄 SwaggerConfig.java
-│   │   │   │   └── 📄 WebConfig.java
-│   │   │   ├── 📂 controller
-│   │   │   │   ├── 📄 AuthController.java
-│   │   │   │   ├── 📄 FileController.java
-│   │   │   │   ├── 📄 AdminController.java
-│   │   │   │   └── 📄 LoadBalancerController.java
-│   │   │   ├── 📂 model
-│   │   │   │   ├── 📂 entity
-│   │   │   │   │   ├── 📄 User.java
-│   │   │   │   │   ├── 📄 FileMetadata.java
-│   │   │   │   │   ├── 📄 FileChunk.java
-│   │   │   │   │   ├── 📄 Container.java
-│   │   │   │   │   └── 📄 AuditLog.java
-│   │   │   │   └── 📂 dto
-│   │   │   │       ├── 📄 UserDTO.java
-│   │   │   │       ├── 📄 FileDTO.java
-│   │   │   │       └── 📄 ContainerStatusDTO.java
-│   │   │   ├── 📂 repository
-│   │   │   │   ├── 📄 UserRepository.java
-│   │   │   │   ├── 📄 FileRepository.java
-│   │   │   │   └── 📄 ContainerRepository.java
-│   │   │   ├── 📂 service
-│   │   │   │   ├── 📂 auth
-│   │   │   │   │   ├── 📄 AuthService.java
-│   │   │   │   │   └── 📄 JwtService.java
-│   │   │   │   ├── 📂 file
-│   │   │   │   │   ├── 📄 FileService.java
-│   │   │   │   │   ├── 📄 ChunkingService.java
-│   │   │   │   │   └── 📄 EncryptionService.java
-│   │   │   │   ├── 📂 loadbalancer
-│   │   │   │   │   ├── 📄 LoadBalancerService.java
-│   │   │   │   │   ├── 📄 RoundRobinStrategy.java
-│   │   │   │   │   ├── 📄 FCFSStrategy.java
-│   │   │   │   │   └── 📄 PriorityStrategy.java
-│   │   │   │   └── 📂 monitoring
-│   │   │   │       ├── 📄 HealthCheckService.java
-│   │   │   │       └── 📄 MetricsService.java
-│   │   │   └── 📂 util
-│   │   │       ├── 📄 Constants.java
-│   │   │       └── 📄 SecurityUtil.java
-│   │   └── 📂 resources
-│   │       ├── 📄 application.yml
-│   │       ├── 📄 application-dev.yml
-│   │       └── 📄 application-prod.yml
-│   └── 📂 test
-│       └── 📂 java/com/cloudstore
-│           ├── 📂 service
-│           │   ├── 📄 FileServiceTest.java
-│           │   └── 📄 LoadBalancerServiceTest.java
-│           └── 📂 controller
-│               ├── 📄 FileControllerTest.java
-│               └── 📄 LoadBalancerControllerTest.java
-│
-├── 📂 frontend
-│   ├── 📂 src
-│   │   ├── 📂 main
-│   │   │   ├── 📂 java/com/cloudstore/gui
-│   │   │   │   ├── 📄 MainApplication.java
-│   │   │   │   ├── 📂 controller
-│   │   │   │   │   ├── 📄 LoginController.java
-│   │   │   │   │   ├── 📄 DashboardController.java
-│   │   │   │   │   └── 📄 AdminController.java
-│   │   │   │   └── 📂 util
-│   │   │   │       └── 📄 GuiUtils.java
-│   │   │   └── 📂 resources
-│   │   │       ├── 📂 fxml
-│   │   │       │   ├── 📄 login.fxml
-│   │   │       │   ├── 📄 dashboard.fxml
-│   │   │       │   └── 📄 admin.fxml
-│   │   │       └── 📂 css
-│   │   │           └── 📄 styles.css
-│   │   └── 📂 test
-│   │       └── 📂 java/com/cloudstore/gui
-│   │           └── 📂 controller
-│   │               └── 📄 LoginControllerTest.java
-│   └── 📄 pom.xml
-│
-├── 📂 scripts
-│   ├── 📄 setup-databases.sh
-│   ├── 📄 init-containers.sh
-│   └── 📄 run-tests.sh
-│
-├── 📄 .gitignore
-├── 📄 pom.xml
-└── 📄 README.md
+└── 📁distributed-file-storage
+    └── 📁.vscode
+        └── settings.json
+    └── 📁backend
+        └── pom.xml
+        └── 📁src
+            └── 📁main
+                └── 📁java
+                    └── 📁com
+                        └── 📁cloudstore
+                            └── CloudStoreApplication.java
+                            └── 📁config
+                                └── AsyncConfig.java
+                                └── SecurityConfig.java
+                                └── SwaggerConfig.java
+                                └── WebConfig.java
+                            └── 📁controller
+                                └── AdminController.java
+                                └── AuthController.java
+                                └── FileController.java
+                                └── LoadBalancerController.java
+                            └── 📁model
+                                └── 📁dto
+                                    └── ContainerStatusDTO.java
+                                    └── FileDTO.java
+                                    └── UserDTO.java
+                                └── 📁entity
+                                    └── AuditLog.java
+                                    └── Container.java
+                                    └── FileChunk.java
+                                    └── FileMetadata.java
+                                    └── User.java
+                            └── 📁repository
+                                └── ContainerRepository.java
+                                └── FileRepository.java
+                                └── UserRepository.java
+                            └── 📁service
+                                └── 📁auth
+                                    └── AuthService.java
+                                    └── JwtService.java
+                                └── 📁file
+                                    └── ChunkingService.java
+                                    └── EncryptionService.java
+                                    └── FileService.java
+                                └── 📁loadbalancer
+                                    └── FCFSStrategy.java
+                                    └── LoadBalancerService.java
+                                    └── PriorityStrategy.java
+                                    └── RoundRobinStrategy.java
+                                └── 📁monitoring
+                                    └── HealthCheckService.java
+                                    └── MetricsService.java
+                            └── 📁utils
+                                └── Constants.java
+                                └── SecurityUtil.java
+                └── 📁resources
+                    └── application-dev.yml
+                    └── application-prod.yml
+                    └── application.yml
+            └── 📁test
+                └── 📁java
+                    └── 📁com
+                        └── 📁cloudstore
+                            └── 📁controller
+                                └── FileControllerTest.java
+                                └── LoadBalancerControllerTest.java
+                            └── 📁service
+                                └── FileServiceTest.java
+                                └── LoadBalancerServiceTest.java
+    └── 📁docker
+        └── docker-compose.yml
+        └── 📁load-balancer
+            └── Dockerfile
+        └── 📁secrets
+            └── mysql_root_password
+            └── mysql_user_password
+        └── 📁storage-container
+            └── Dockerfile
+    └── 📁docs
+        └── DB_SCHEMA.md
+        └── KEY_DEV.md
+        └── LoadBalancerService.java
+    └── 📁frontend
+        └── pom.xml
+        └── 📁src
+            └── 📁main
+                └── 📁java
+                    └── 📁com
+                        └── 📁cloudstore
+                            └── 📁gui
+                                └── 📁controller
+                                    └── AdminController.java
+                                    └── DashboardController.java
+                                    └── LoginController.java
+                                └── MainApplication.java
+                                └── 📁util
+                                    └── GuiUtils.java
+                    └── 📁util
+                └── 📁resources
+                    └── 📁css
+                        └── styles.css
+                    └── 📁fxml
+                        └── admin.xml
+                        └── dashboard.fxml
+                        └── login.fxml
+            └── 📁test
+                └── 📁java
+                    └── 📁com
+                        └── 📁cloudstore
+                            └── 📁gui
+                                └── 📁controller
+                                    └── LoginControllerTest.java
+    └── 📁scripts
+        └── init-containers.sh
+        └── run-tests.sh
+        └── setup-databases.sh
+    └── 📁shared
+        └── pom.xml
+        └── 📁src
+            └── 📁main
+                └── 📁java
+                    └── 📁com
+                        └── 📁cloudstore
+                            └── 📁shared
+                                └── 📁constants
+                                    └── FileOperationStatus.java
+                                    └── SystemConstants.java
+                                    └── UserRoles.java
+                                └── 📁dto
+                                    └── ContainerStatusDTO.java
+                                    └── FileDTO.java
+                                    └── UserDTO.java
+                                └── 📁exceptions
+                                    └── AuthenticationException.java
+                                    └── FileStorageException.java
+                                    └── LoadBalancerException.java
+                                └── 📁model
+                                    └── FileChunkMetadata.java
+                                    └── StorageContainer.java
+                                └── 📁security
+                                    └── EncryptionUtil.java
+                                    └── FileEncryptor.java
+                                    └── PasswordValidator.java
+                                └── 📁validation
+                                    └── FileValidationService.java
+                                    └── UserValidationService.java
+            └── 📁resources
+    └── .gitignore
+    └── DEVELOPMENT-WORKFLOW.md
+    └── pom.xml
+    └── PROJECT_STRUCTURE.md
+    └── README.md
