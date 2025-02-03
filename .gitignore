@@ -1,3 +1,5 @@
+.vscode/
+
 # Maven build artifacts
 target/
 bin/
