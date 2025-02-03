@@ -1,0 +1,25 @@
+/bin
+/target
+/.classpath
+/.settings
+/*.iml
+/.idea
+/target
+/dependency
+/distrib
+/generated*
+/misc/jetty.zip
+/misc/jetty
+/.project
+/src/main/webapp/applet/jwsdecrypt.jar
+*.swp
+/src/main/webapp/applet/signature-client.jar
+src/test/resources/linshare-test.extra.properties
+# PyDev specific (Python IDE for Eclipse)
+*.pydevproject
+# snyk
+.dccache
+snyk-error.log
+snyk-result.json
+snyk_report.html
+/home/**
