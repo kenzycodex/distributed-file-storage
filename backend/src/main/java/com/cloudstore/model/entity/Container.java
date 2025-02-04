@@ -1,9 +1,10 @@
-ipackage com.cloudstore.model.entity;
+package com.cloudstore.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;

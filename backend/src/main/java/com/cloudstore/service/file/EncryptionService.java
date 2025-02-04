@@ -1,11 +1,12 @@
-package com.cloudstore.service.security;
+package com.cloudstore.service.file;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.security.*;
 import java.util.Base64;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EncryptionService {
     // AES Symmetric Encryption for File Chunks

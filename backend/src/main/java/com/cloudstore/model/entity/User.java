@@ -3,6 +3,7 @@ package com.cloudstore.model.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -102,7 +104,7 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    // Constructors, Getters, and Setters
+    // Constructors
     public User() {}
 
     // Builder pattern for user creation
@@ -135,63 +137,191 @@ public class User implements UserDetails {
     }
 
     // Getters and setters
-    public UUID getId() { return id; }
-    public void setId(UUID id) { this.id = id; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
-
-    public UserRole getRole() { return role; }
-    public void setRole(UserRole role) { this.role = role; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-
-    public Boolean getEnabled() { return enabled; }
-    public void setEnabled(Boolean enabled) { this.enabled = enabled; }
-
-    public Boolean getAccountNonLocked() { return accountNonLocked; }
-    public void setAccountNonLocked(Boolean accountNonLocked) { 
-        this.accountNonLocked = accountNonLocked; 
+    public UUID getId() {
+        return id;
     }
 
-    public List<FileMetadata> getFiles() { return files; }
-    public void setFiles(List<FileMetadata> files) { this.files = files; }
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
-    // Soft delete method
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Boolean getAccountNonLocked() {
+        return accountNonLocked;
+    }
+
+    public void setAccountNonLocked(Boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public LocalDateTime getLastLoginTimestamp() {
+        return lastLoginTimestamp;
+    }
+
+    public void setLastLoginTimestamp(LocalDateTime lastLoginTimestamp) {
+        this.lastLoginTimestamp = lastLoginTimestamp;
+    }
+
+    public Double getProfileCompletionPercentage() {
+        return profileCompletionPercentage;
+    }
+
+    public void setProfileCompletionPercentage(Double profileCompletionPercentage) {
+        this.profileCompletionPercentage = profileCompletionPercentage;
+    }
+
+    public List<FileMetadata> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileMetadata> files) {
+        this.files = files;
+    }
+
+    // Business methods
     public void softDelete() {
         this.isDeleted = true;
         this.enabled = false;
     }
 
-    // Restore method
     public void restore() {
         this.isDeleted = false;
         this.enabled = true;
     }
 
-    // Update method to track last login
     public void updateLastLogin() {
         this.lastLoginTimestamp = LocalDateTime.now();
         calculateProfileCompletion();
     }
 
+    // Helper class for profile field evaluation
+    private class ProfileField {
+        private final Object value;
+        private final double weight;
+        private final boolean required;
+
+        ProfileField(Object value, double weight, boolean required) {
+            this.value = value;
+            this.weight = weight;
+            this.required = required;
+        }
+
+        boolean isComplete() {
+            if (value == null) {
+                return !required;
+            }
+
+            if (value instanceof String) {
+                return StringUtils.hasText((String) value);
+            }
+
+            if (value instanceof Boolean) {
+                return (Boolean) value;
+            }
+
+            if (value instanceof Collection) {
+                return !((Collection<?>) value).isEmpty();
+            }
+
+            return true;
+        }
+    }
+
     private void calculateProfileCompletion() {
-        int completedFields = 0;
-        int totalFields = 5;  // Based on your user profile requirements
+        double totalWeight = 0.0;
+        double completedWeight = 0.0;
 
-        if (StringUtils.hasText(this.username)) completedFields++;
-        if (StringUtils.hasText(this.email)) completedFields++;
-        if (this.role != null) completedFields++;
-        if (this.lastLoginTimestamp != null) completedFields++;
-        // Add more checks as needed
+        // Define fields and their weights
+        var profileFields = new ProfileField[] {
+            // Essential fields (40% of total)
+            new ProfileField(this.username, 15.0, true),
+            new ProfileField(this.email, 15.0, true),
+            new ProfileField(this.password, 10.0, true),
 
-        this.profileCompletionPercentage = (completedFields * 100.0) / totalFields;
+            // Account status fields (20% of total)
+            new ProfileField(this.role, 10.0, true),
+            new ProfileField(this.enabled, 5.0, true),
+            new ProfileField(this.accountNonLocked, 5.0, true),
+
+            // Activity indicators (25% of total)
+            new ProfileField(this.lastLoginTimestamp, 10.0, false),
+            new ProfileField(this.createdAt, 5.0, false),
+            new ProfileField(this.updatedAt, 5.0, false),
+            new ProfileField(!Boolean.TRUE.equals(this.isDeleted), 5.0, true),
+
+            // Additional profile data (15% of total)
+            new ProfileField(!this.files.isEmpty(), 15.0, false)
+        };
+
+        // Calculate completion percentage
+        for (ProfileField field : profileFields) {
+            totalWeight += field.weight;
+            if (field.isComplete()) {
+                completedWeight += field.weight;
+            }
+        }
+
+        // Update profile completion percentage
+        this.profileCompletionPercentage = (completedWeight / totalWeight) * 100.0;
+        
+        // Round to 2 decimal places
+        this.profileCompletionPercentage = Math.round(this.profileCompletionPercentage * 100.0) / 100.0;
     }
 }
