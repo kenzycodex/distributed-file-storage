@@ -34,6 +34,7 @@
                                     └── FileMetadata.java
                                     └── User.java
                             └── 📁repository
+                                └── AuditLogRepository.java
                                 └── ContainerRepository.java
                                 └── FileRepository.java
                                 └── UserRepository.java
@@ -60,6 +61,7 @@
                     └── application-dev.yml
                     └── application-prod.yml
                     └── application.yml
+                    └── schema.sql
             └── 📁test
                 └── 📁java
                     └── 📁com
@@ -83,6 +85,7 @@
         └── DB_SCHEMA.md
         └── KEY_DEV.md
         └── LoadBalancerService.java
+        └── test.java
     └── 📁frontend
         └── pom.xml
         └── 📁src

@@ -47,12 +47,34 @@ public class FileMetadata {
     @Column(nullable = false)
     private FileStatus status = FileStatus.ACTIVE;
 
+    @Column(nullable = false)
+    private Boolean isDeleted = false;  // Soft delete flag
+
+    @ElementCollection
+    @CollectionTable(name = "file_tags", joinColumns = @JoinColumn(name = "file_id"))
+    @Column(name = "tag")
+    private Set<String> tags = new HashSet<>();
+
+    @Column
+    private String version = "1.0";
+
+    @ElementCollection
+    @CollectionTable(name = "file_sharing_permissions", joinColumns = @JoinColumn(name = "file_id"))
+    private Map<UUID, Set<SharingPermission>> sharingPermissions = new HashMap<>();
+
     // File status enum
     public enum FileStatus {
         ACTIVE, 
         DELETED, 
         ARCHIVED, 
         SHARED
+    }
+
+    public enum SharingPermission {
+        READ, 
+        WRITE, 
+        DELETE, 
+        SHARE
     }
 
     // Nested Builder class
@@ -121,4 +143,16 @@ public class FileMetadata {
 
     public FileStatus getStatus() { return status; }
     public void setStatus(FileStatus status) { this.status = status; }
+
+    // Method to soft delete
+    public void softDelete() {
+        this.isDeleted = true;
+        this.status = FileStatus.DELETED;
+    }
+
+    // Method to restore
+    public void restore() {
+        this.isDeleted = false;
+        this.status = FileStatus.ACTIVE;
+    }
 }

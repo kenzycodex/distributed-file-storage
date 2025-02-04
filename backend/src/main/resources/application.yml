@@ -7,11 +7,12 @@ spring:
   # Database Configuration
   datasource:
     mysql:
-      jdbc-url: jdbc:mysql://mysql-db:3306/cloudstore_db
+      jdbc-url: jdbc:mysql://localhost:3306/cloudstore_db
       username: ${MYSQL_USER}
       password: ${MYSQL_PASSWORD}
     sqlite:
       jdbc-url: jdbc:sqlite:/data/local-cache.db
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   # JPA Configuration
   jpa:
@@ -20,11 +21,20 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
-  # Security Configuration
+  # Encryption and Security Configuration
   security:
     jwt:
       secret: ${JWT_SECRET}
       expiration: 86400000  # 24 hours
+    encryption:
+      aes-key-length: 256
+      rsa-key-length: 2048
+
+  # File Storage Configuration
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
 
 # Logging Configuration
 logging:
@@ -53,3 +63,23 @@ management:
     web:
       exposure:
         include: health,metrics,info
+
+# Custom Application Properties
+cloudstore:
+  storage:
+    base-path: /opt/cloudstore/files
+    chunk-size: 1MB  # 1 Megabyte chunks
+
+  security:
+    soft-delete:
+      retention-days: 30
+    
+    audit:
+      log-retention-days: 90
+
+# Logging Configuration
+logging:
+  level:
+    com.cloudstore: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG

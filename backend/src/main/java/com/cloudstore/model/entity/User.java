@@ -59,6 +59,15 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Boolean accountNonLocked = true;
 
+    @Column(nullable = false)
+    private Boolean isDeleted = false;
+
+    @Column
+    private LocalDateTime lastLoginTimestamp;
+
+    @Column
+    private Double profileCompletionPercentage = 0.0;
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FileMetadata> files;
 
@@ -154,4 +163,35 @@ public class User implements UserDetails {
 
     public List<FileMetadata> getFiles() { return files; }
     public void setFiles(List<FileMetadata> files) { this.files = files; }
+
+    // Soft delete method
+    public void softDelete() {
+        this.isDeleted = true;
+        this.enabled = false;
+    }
+
+    // Restore method
+    public void restore() {
+        this.isDeleted = false;
+        this.enabled = true;
+    }
+
+    // Update method to track last login
+    public void updateLastLogin() {
+        this.lastLoginTimestamp = LocalDateTime.now();
+        calculateProfileCompletion();
+    }
+
+    private void calculateProfileCompletion() {
+        int completedFields = 0;
+        int totalFields = 5;  // Based on your user profile requirements
+
+        if (StringUtils.hasText(this.username)) completedFields++;
+        if (StringUtils.hasText(this.email)) completedFields++;
+        if (this.role != null) completedFields++;
+        if (this.lastLoginTimestamp != null) completedFields++;
+        // Add more checks as needed
+
+        this.profileCompletionPercentage = (completedFields * 100.0) / totalFields;
+    }
 }
