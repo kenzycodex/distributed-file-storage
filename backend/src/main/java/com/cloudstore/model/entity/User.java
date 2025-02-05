@@ -70,6 +70,15 @@ public class User implements UserDetails {
     @Column
     private Double profileCompletionPercentage = 0.0;
 
+    @Column
+    private Integer failedAttempts = 0;
+
+    @Column
+    private LocalDateTime lockTime;
+
+    @Column
+    private LocalDateTime passwordChangeDate;  // Add this field
+
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FileMetadata> files;
 
@@ -235,7 +244,35 @@ public class User implements UserDetails {
         this.files = files;
     }
 
-    // Business methods
+    // New methods to handle failed login attempts, lock time, and password change date
+    public Integer getFailedAttempts() {
+        return failedAttempts;
+    }
+
+    public void setFailedAttempts(Integer failedAttempts) {
+        this.failedAttempts = failedAttempts;
+    }
+
+    public void incrementFailedAttempts() {
+        this.failedAttempts++;
+    }
+
+    public LocalDateTime getLockTime() {
+        return lockTime;
+    }
+
+    public void setLockTime(LocalDateTime lockTime) {
+        this.lockTime = lockTime;
+    }
+
+    public LocalDateTime getPasswordChangeDate() {  // Add getter
+        return passwordChangeDate;
+    }
+
+    public void setPasswordChangeDate(LocalDateTime passwordChangeDate) {  // Add setter
+        this.passwordChangeDate = passwordChangeDate;
+    }
+
     public void softDelete() {
         this.isDeleted = true;
         this.enabled = false;

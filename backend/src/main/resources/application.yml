@@ -26,6 +26,7 @@ spring:
     jwt:
       secret: ${JWT_SECRET}
       expiration: 86400000  # 24 hours
+      refresh-token-expiration: 604800000  # 7 days
     encryption:
       aes-key-length: 256
       rsa-key-length: 2048
@@ -76,6 +77,20 @@ cloudstore:
     
     audit:
       log-retention-days: 90
+
+# Rate Limiting Configuration
+rate:
+  limit:
+    capacity: 100
+    time: 1
+
+# Cache Configuration
+spring:
+  cache:
+    type: caffeine
+    cache-names: userDetails
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=300s
 
 # Logging Configuration
 logging:
